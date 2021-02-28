@@ -36,12 +36,12 @@ public class Wallet {
         }catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | NoSuchProviderException e){
             e.printStackTrace();
         }
-        this.balance = 0;
+        this.balance = 1000d;
         this.keyPair = keyGen.generateKeyPair();
     }
 
     public Wallet(String path){
-        this.balance = 0;
+        this.balance = 1000d;
         this.loadKeyPair(path);
     }
 
@@ -55,9 +55,8 @@ public class Wallet {
         return bigInteger.toString(16);
     }
 
-    public static void main(String[] args) {
-        Wallet cool = new Wallet("neat");
-        System.out.println(cool.getPublicKeyHex());
+    public double getBalance(){
+        return this.balance;
     }
 
     public boolean saveKeyPair(String path) {
