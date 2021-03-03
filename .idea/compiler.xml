@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="PlasmaCoinJava" />
+        <module name="PlasmaCoinWalletOLD" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="PlasmaCoinJava" target="11" />
+      <module name="PlasmaCoinWalletOLD" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

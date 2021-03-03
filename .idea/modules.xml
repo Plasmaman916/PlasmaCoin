@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PlasmaCoinJava.iml" filepath="$PROJECT_DIR$/PlasmaCoinJava.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PlasmaCoinWallet/PlasmaCoinWalletOLD.iml" filepath="$PROJECT_DIR$/PlasmaCoinWallet/PlasmaCoinWalletOLD.iml" />
     </modules>
   </component>
 </project>
