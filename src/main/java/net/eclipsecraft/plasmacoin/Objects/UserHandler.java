@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import net.eclipsecraft.plasmacoin.app.Main;
 import net.eclipsecraft.plasmacoin.app.PeerToPeerServer;
 import net.eclipsecraft.plasmacoin.blockchain.Block;
+import net.eclipsecraft.plasmacoin.wallet.Transaction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,30 +60,51 @@ public class UserHandler extends Thread{
             return;
         }
 //        System.out.println(message);
-        ArrayList<Block> chain = new ArrayList<>();
-        chain = ChainMessage.getChainFromJson(message);
-        if(chain ==null){
-            return;
-        }
-        boolean newChain = Main.getCurrentChain().replaceChain(chain);
-        if(newChain){
-            System.out.println("New Chain good, syncing with peers");
-            int storedAmount = 0;
-            for(Block b : Main.getCurrentChain().getChain()){
-                if(b.getData().equals(Main.getName())){
-                    storedAmount++;
-                }
+        Message message1 = gson.fromJson(message, Message.class);
+        if(message1.getType().equalsIgnoreCase("chain")) {
+            ArrayList<Block> chain = new ArrayList<>();
+            chain = ChainMessage.getChainFromJson(message1.getMessage());
+            if (chain == null) {
+                return;
             }
-            storedAmount++;
-            System.out.println("You have "+storedAmount+" / "+Main.getCurrentChain().getChain().size());
-            syncChains(chain);
+            boolean newChain = Main.getCurrentChain().replaceChain(chain);
+            if (newChain) {
+                System.out.println("New Chain good, syncing with peers");
+                int storedAmount = 0;
+                for (Block b : Main.getCurrentChain().getChain()) {
+                    if (b.getData().equals(Main.getName())) {
+                        storedAmount++;
+                    }
+                }
+                storedAmount++;
+                System.out.println("You have " + storedAmount + " / " + Main.getCurrentChain().getChain().size());
+                syncChains(chain);
+            }
+        }else if(message1.getType().equalsIgnoreCase("transaction")){
+            Transaction transaction = gson.fromJson(message,Transaction.class);
+            boolean existed = Main.getPool().addOrUpdateTransaction(transaction);
+            if(!existed){
+                broadcastTransaction(transaction);
+                System.out.println("Broadcasting!!!!!!!!!");
+            }
         }
     }
 
     public void syncChains(ArrayList<Block> chain){
         System.out.println("Handler is syncing chain");
         for(User u : p2pserver.getUserMap().get(this)){
-            u.sendMessage(ChainMessage.chainToJson(chain));
+            u.sendMessage(newMessage("chain",ChainMessage.chainToJson(chain)));
         }
+    }
+
+    public void broadcastTransaction(Transaction transaction){
+        for(User u : p2pserver.getUserMap().get(this)){
+            u.sendMessage(newMessage("transaction",gson.toJson(transaction)));
+        }
+    }
+
+    public String newMessage(String type, String message){
+        Message message1 = new Message(type,message);
+        return gson.toJson(message1);
     }
 }

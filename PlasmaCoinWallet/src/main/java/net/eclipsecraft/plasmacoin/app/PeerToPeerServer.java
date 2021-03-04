@@ -5,6 +5,7 @@ import net.eclipsecraft.plasmacoin.Objects.ChainMessage;
 import net.eclipsecraft.plasmacoin.Objects.Heartbeat;
 import net.eclipsecraft.plasmacoin.Objects.User;
 import net.eclipsecraft.plasmacoin.Objects.UserHandler;
+import net.eclipsecraft.plasmacoin.wallet.Transaction;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -88,6 +89,12 @@ public class PeerToPeerServer extends Thread{
     public void syncChains(){
         for(UserHandler handler : userMap.keySet()){
             handler.syncChains(Main.getCurrentChain().getChain());
+        }
+    }
+
+    public void broadcastTransaction(Transaction transaction){
+        for(UserHandler handler : userMap.keySet()){
+            handler.broadcastTransaction(transaction);
         }
     }
 

@@ -9,13 +9,18 @@ public class TransactionPool {
         this.transactions = new CopyOnWriteArrayList<>();
     }
 
-    public void addOrUpdateTransaction(Transaction transaction){
+    public boolean addOrUpdateTransaction(Transaction transaction){
+        boolean alreadyExisted = false;
         for(Transaction t : transactions){
             if(t.getId().toString().equals(transaction.getId().toString())){
+                if(transaction == t){
+                    alreadyExisted = true;
+                }
                 transactions.remove(t);
             }
         }
         transactions.add(transaction);
+        return alreadyExisted;
     }
 
     public CopyOnWriteArrayList<Transaction> getTransactions(){
