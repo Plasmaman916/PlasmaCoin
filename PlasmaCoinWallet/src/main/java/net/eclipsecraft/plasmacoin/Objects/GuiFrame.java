@@ -17,11 +17,12 @@ import javax.swing.GroupLayout;
 /**
  * @author Sam Forsythe
  */
-public class test extends JFrame {
-	public test() {
+public class GuiFrame extends JFrame {
+	public GuiFrame() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initComponents();
 		loadEvents();
+		new TransactionUpdater(this).start();
 	}
 
 	private void loadEvents(){
@@ -225,6 +226,10 @@ public class test extends JFrame {
 		pack();
 		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
+	}
+
+	public JTextArea getAddressField(){
+		return this.textArea1;
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

@@ -2,15 +2,18 @@ package net.eclipsecraft.plasmacoin.app;
 
 import com.google.gson.Gson;
 import net.eclipsecraft.plasmacoin.Objects.ChainMessage;
+import net.eclipsecraft.plasmacoin.Objects.Heartbeat;
 import net.eclipsecraft.plasmacoin.Objects.User;
 import net.eclipsecraft.plasmacoin.Objects.UserHandler;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.apache.log4j.Logger;
 
 
 public class PeerToPeerServer extends Thread{
@@ -33,10 +36,12 @@ public class PeerToPeerServer extends Thread{
     public PeerToPeerServer(InetSocketAddress address, int backlog, String peers) throws IOException {
         server = new ServerSocket(address.getPort(),backlog,address.getAddress());
         System.out.println(peers);
+        ArrayList<String> peerList = new ArrayList<>();
         if(peers!="") {
             String[] users = peers.split(",");
             System.out.println(users.length);
             for (String u : users) {
+                peerList.add(u);
                 String[] data = u.split(":");
                 int port = 0;
                 String addr = null;
@@ -52,10 +57,13 @@ public class PeerToPeerServer extends Thread{
                 if (port > 65536) {
                     continue;
                 }
-                Socket socket = new Socket(addr, port);
-                addSocket(socket);
+                try {
+                    Socket socket = new Socket(addr, port);
+                    addSocket(socket);
+                }catch (IOException e){}
             }
         }
+        new Heartbeat(this,peerList);
         this.start();
     }
 
@@ -83,7 +91,18 @@ public class PeerToPeerServer extends Thread{
         }
     }
 
-    private void addSocket(Socket socket){
+    public void removeUser(User u){
+        for(UserHandler hand : userMap.keySet()){
+            CopyOnWriteArrayList<User> usrSet = userMap.get(hand);
+            if(usrSet.contains(u)){
+                usrSet.remove(u);
+                userMap.remove(hand);
+                userMap.put(hand,usrSet);
+            }
+        }
+    }
+
+    public void addSocket(Socket socket){
         if(socket == null){
             return;
         }
@@ -92,16 +111,16 @@ public class PeerToPeerServer extends Thread{
         for(UserHandler h : userMap.keySet()){
             CopyOnWriteArrayList<User> userCollection = userMap.get(h);
             if(userCollection.size()<10){
-                System.out.println("Collection less thtan 10");
+//                System.out.println("Collection less thtan 10");
                 if(userCollection.size() > connections){
-                    System.out.println("COnnections good");
+//                    System.out.println("Connections good");
                     bestHandler = h;
                     connections = userCollection.size();
                 }
             }
         }
         if(bestHandler == null){
-            System.out.println("NUll handler");
+//            System.out.println("NUll handler");
             UserHandler handler = new UserHandler(this);
             bestHandler = handler;
             userMap.put(bestHandler,new CopyOnWriteArrayList<>());

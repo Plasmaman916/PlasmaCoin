@@ -21,20 +21,24 @@ public class UserHandler extends Thread{
     public void run() {
         super.run();
         while(true){
-            for(User u : p2pserver.getUserMap().get(this)){
-                boolean ready = false;
-                try{
-                    ready = u.ready();
-                }catch (IOException e){}
-                if(!ready){
-                    continue;
+            try{
+                for(User u : p2pserver.getUserMap().get(this)){
+                    boolean ready = false;
+                    try{
+                        ready = u.ready();
+                    }catch (IOException e){}
+                    if(!ready){
+                        continue;
+                    }
+                    String message = null;
+                    try{
+                        message = u.getIncomingMessage();
+                    }catch (IOException e){}
+                    if(message == null) continue;
+                    handleMessage(u,message);
                 }
-                String message = null;
-                try{
-                    message = u.getIncomingMessage();
-                }catch (IOException e){}
-                if(message == null) continue;
-                handleMessage(u,message);
+            }catch (NullPointerException e){
+                continue;
             }
         }
     }
@@ -43,6 +47,15 @@ public class UserHandler extends Thread{
     private void handleMessage(User u, String message){
         if(u.getSock().isClosed()){
             p2pserver.getUserMap().get(this).remove(u);
+            return;
+        }
+        if(message.equalsIgnoreCase("keepAlive")){
+            u.sendMessage("alive");
+            u.setAlive(true);
+            return;
+        }
+        if(message.equalsIgnoreCase("alive")){
+            u.setAlive(true);
             return;
         }
 //        System.out.println(message);

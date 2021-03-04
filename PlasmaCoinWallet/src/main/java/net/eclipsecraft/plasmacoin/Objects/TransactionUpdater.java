@@ -2,31 +2,36 @@ package net.eclipsecraft.plasmacoin.Objects;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import net.eclipsecraft.plasmacoin.app.Main;
 
 public class TransactionUpdater extends Task {
-    private Label label;
-    public TransactionUpdater(Label label){
-        this.label = label;
+    private GuiFrame frame;
+    public TransactionUpdater(GuiFrame frame){
+        this.frame = frame;
     }
 
     private static int test = 0;
     @Override
     protected Object call() throws Exception {
-//        while(test > -1) {
+        while(test > -1) {
 //            label.setWrapText(true);
-//            Platform.runLater(() -> {
-//                label.setText(Main.getCurrentChain().getChain().size()+"");
-////                test++;
-//            });
-//            Thread.sleep(1000);
-//        }
+            System.out.println("updating");
+            frame.getAddressField().setText(Main.getCurrentChain().getChain().size()+"");
+            Thread.sleep(1000);
+        }
         return null;
     }
 
+    @Override
+    public void run() {
+        super.run();
+        try{
+            call();
+        }catch (Exception e){}
+    }
+
     public Thread start(){
+        System.out.println("Starting");
         Thread thread = new Thread(this);
         thread.start();
         return thread;

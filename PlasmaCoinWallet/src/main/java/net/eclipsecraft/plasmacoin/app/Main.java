@@ -43,19 +43,19 @@ public class Main {
                 }
                 port = newPort;     //Setting the port to the new port
             }
-            if (a.equals("-ws-port")) {     //Checks if they are trying to start with a custom port
+            if (a.equals("-s-port")) {     //Checks if they are trying to start with a custom port
                 if (args.length < loc + 2)   {     //Checking if the args includes an argument after the "-ws-port"
-                    System.out.println("You must specify a port! (-ws-port)");
+                    System.out.println("You must specify a port! (-s-port)");
                     System.exit(1);     //Exiting because there is a missing argument (-ws-port)
                 }
                 String p = args[loc + 1];     //Getting the port argument
                 if (!isInteger(p)) {       //Checking if the port argument is valid
-                    System.out.println("You have specified an invalid port! (-ws-port)");
+                    System.out.println("You have specified an invalid port! (-s-port)");
                     System.exit(1);     //Exiting because the port argument is invalid
                 }
                 int newPort = Integer.valueOf(p);//Parsing the port argument into an int
                 if (!isValidPort(newPort)) {       //Checking if it is a valid port between 0 and 65535
-                    System.out.println("The specified port is invalid! (-ws-port)");
+                    System.out.println("The specified port is invalid! (-s-port)");
                     System.exit(1);     //Exiting due to specified port being invalid
                 }
                 wsport = newPort;     //Setting the port to the new port
@@ -84,8 +84,9 @@ public class Main {
         bc = new BlockChain();
         p2pserver = new PeerToPeerServer(new InetSocketAddress(wsport),0,peers);
         System.out.println("Listening on port "+port);
-        FXMain.main(new String[]{});
+        FXMain.main(new String[]{peers});
     }
+
 
     public static Wallet getWallet() {
         return wallet;

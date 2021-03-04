@@ -1,30 +1,7 @@
 package net.eclipsecraft.plasmacoin.app;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
+import net.eclipsecraft.plasmacoin.Objects.GuiFrame;
 import net.eclipsecraft.plasmacoin.Objects.TransactionUpdater;
-import net.eclipsecraft.plasmacoin.Objects.test;
-import net.eclipsecraft.plasmacoin.app.Main;
-import net.eclipsecraft.plasmacoin.wallet.Transaction;
-import net.eclipsecraft.plasmacoin.wallet.Wallet;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FXMain extends Thread{
@@ -36,7 +13,7 @@ public class FXMain extends Thread{
     @Override
     public void run() {
         super.run();
-        JFrame f= new test();
+        GuiFrame f = new GuiFrame();
         f.setVisible(true);
         try {
             Thread.sleep(1000);

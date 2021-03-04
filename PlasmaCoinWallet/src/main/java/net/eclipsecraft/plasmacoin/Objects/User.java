@@ -10,12 +10,30 @@ public class User {
     private BufferedReader reader;
     private PrintWriter writer;
     private UUID id;
+    private boolean alive = false;
+    private boolean runningAlive = false;
 
     public User(Socket socket) throws IOException {
         this.sock = socket;
         reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
         writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
         id = UUID.randomUUID();
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isRunningAlive() {
+        return runningAlive;
+    }
+
+    public void setRunningAlive(boolean runningAlive) {
+        this.runningAlive = runningAlive;
     }
 
     public UUID getId(){
@@ -31,7 +49,6 @@ public class User {
     }
 
     public void sendMessage(String s){
-        System.out.println("User is sending message");
         writer.println(s);
         writer.flush();
     }
